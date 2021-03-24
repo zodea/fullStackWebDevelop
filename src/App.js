@@ -6,6 +6,11 @@ const App = () => {
 
   const addToBook = event => {
     event.preventDefault()
+    const repeatName = persons.filter(person => person.name === newName)
+    if (repeatName && repeatName.length) {
+      alert(`${newName} is already added to phonebook`)
+      return
+    }
     const newPerson = persons.concat({ name: newName })
     setPersons(newPerson)
     setNewName('')
