@@ -4,6 +4,7 @@ const App = () => {
   const [persons, setPersons] = useState([{ name: 'Arto Hellas', number: '040-1234567' }])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
+  const [filterName, setFilterName] = useState('')
 
   const addToBook = event => {
     event.preventDefault()
@@ -18,6 +19,12 @@ const App = () => {
     setNewNumber('')
   }
 
+  const filterBook = event => {
+    event.preventDefault()
+    const filterNames = persons.filter(person => person.name.toLowerCase().includes(filterName))
+    setPersons(filterNames)
+  }
+
   const changeName = event => {
     setNewName(event.target.value)
   }
@@ -25,9 +32,18 @@ const App = () => {
     setNewNumber(event.target.value)
   }
 
+  const changeFilterName = event => {
+    setFilterName(event.target.value)
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
+      <form onSubmit={filterBook}>
+        filter shown with
+        <input type="text" value={filterName} onChange={changeFilterName} />
+      </form>
+      <h2>add a new</h2>
       <form onSubmit={addToBook}>
         <div>
           name: <input value={newName} onChange={changeName} />
