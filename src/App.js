@@ -19,12 +19,8 @@ const App = () => {
         .then(response => {
           console.log(`response`, response)
           setHasCountry(true)
-          if (response.data.length === 1) {
+          if (response.data.length > 0 && response.data.length <= 10) {
             setCountry(response.data)
-            return
-          } else if (response.data.length > 1 && response.data.length <= 10) {
-            const names = response.data.map(data => data.name)
-            setCountry(names)
             return
           }
           setCountry([])
@@ -50,12 +46,11 @@ const App = () => {
 }
 
 const Country = ({ country }) => {
-  console.log(country)
   if (country.length > 1) {
     return (
       <div>
         {country.map((item, index) => (
-          <div key={index}>{item}</div>
+          <div key={index}>{item.demonym}</div>
         ))}
       </div>
     )
@@ -71,7 +66,7 @@ const Country = ({ country }) => {
             <li key={index}>{language.name}</li>
           ))}
         </ul>
-        <img src={country[0].flag} alt=""/>
+        <img src={country[0].flag} alt="" />
       </div>
     )
   } else {
