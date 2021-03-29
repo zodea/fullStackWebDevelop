@@ -3,8 +3,8 @@ import phone from './services/phonebook'
 
 const App = () => {
   const [persons, setPersons] = useState([])
-  const [number, setNumber] = useState('')
   const [name, setName] = useState('')
+  const [number, setNumber] = useState('')
   const [filterPersons, setFilterPersons] = useState([])
 
   useEffect(() => {
@@ -12,12 +12,33 @@ const App = () => {
       setPersons(res)
     })
   }, [])
-
+  const filterPersonsHandle = event => {
+    setFilterPersons(event.target.value)
+    const newPersons = persons.filter(person => person.name.includes(event.target.value))
+    setPersons(newPersons)
+  }
   const addToBook = event => {
     event.preventDefault()
     const repeatName = persons.filter(person => person.name === name)
+    console.log(repeatName)
     if (repeatName && repeatName.length) {
-      alert(`${name} is already added to phonebook`)
+      if (
+        window.confirm(
+          `${name} is already added to phonebook, replace the old number with a new one?`
+        )
+      ) {
+        phone.update(repeatName[0].id, { name, number }).then(res => {
+          const newPerson = persons.map(person => {
+            if (person.id === repeatName[0].id) {
+              return res
+            }
+            return person
+          })
+          setPersons(newPerson)
+          setName('')
+          setNumber('')
+        })
+      }
       return
     }
     phone.create({ name, number }).then(res => {
@@ -42,7 +63,7 @@ const App = () => {
     <div>
       <h2>Phonebook</h2>
       <div>
-        filter shown with <Input value={filterPersons} onChange={setFilterPersons} />
+        filter shown with <input value={filterPersons} onChange={filterPersonsHandle} />
       </div>
       <h2>add a new</h2>
       <form onSubmit={addToBook}>
