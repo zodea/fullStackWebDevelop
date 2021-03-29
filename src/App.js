@@ -1,8 +1,15 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import phone from './services/phonebook'
 
 const App = () => {
-  const [persons, setPersons] = useState([{ name: 'Arto Hellas' }])
+  const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
+
+  useEffect(() => {
+    phone.getAll().then(res => {
+      setPersons(res)
+    })
+  }, [])
 
   const addToBook = event => {
     event.preventDefault()
@@ -11,9 +18,11 @@ const App = () => {
       alert(`${newName} is already added to phonebook`)
       return
     }
-    const newPerson = persons.concat({ name: newName })
-    setPersons(newPerson)
-    setNewName('')
+    phone.create({ name: newName }).then(res => {
+      const newPerson = persons.concat(res)
+      setPersons(newPerson)
+      setNewName('')
+    })
   }
 
   const changeName = event => {
